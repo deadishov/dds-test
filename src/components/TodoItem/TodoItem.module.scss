@@ -1,0 +1,24 @@
+.todo {
+    width: 100%;
+    display: flex;
+    padding: 20px 40px 20px 12px;
+    font-size: 18px;
+    border-radius: 12px;
+    border: 1px solid #F9F9F9;
+    background: #FFF;
+    box-shadow: 0px 27px 8px 0px rgba(143, 143, 143, 0.00), 0px 17px 7px 0px rgba(143, 143, 143, 0.01), 0px 10px 6px 0px rgba(143, 143, 143, 0.03), 0px 4px 4px 0px rgba(143, 143, 143, 0.04), 0px 1px 2px 0px rgba(143, 143, 143, 0.05);
+
+    &TitleArea {
+        max-width: 463px;
+        width: 100%;
+    }
+
+    &DateArea {
+        width: 100%;
+    }
+
+    &Tools {
+        display: flex;
+        gap: 20px;
+    }
+}
