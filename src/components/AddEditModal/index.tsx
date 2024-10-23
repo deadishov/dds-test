@@ -1,9 +1,10 @@
-import { DatePicker, Input, Modal } from 'antd'
+import { DatePicker, Input, Modal, notification } from 'antd'
 import moment, { Moment } from 'moment'
 import React, { useEffect, useState } from 'react'
 import { useAddTodoMutation, useEditTodoMutation } from '../../redux/services/todoApi'
 import { ItemToEdit } from '../../@types/types'
 import TextArea from 'antd/es/input/TextArea'
+import { NotificationPlacement } from 'antd/es/notification/interface'
 
 interface ModalProps {
     isOpen: boolean,
@@ -20,6 +21,24 @@ const AddEditModal: React.FC<ModalProps> = ({ isOpen, itemToEdit, resetItemToEdi
     const [addTodoRequest] = useAddTodoMutation()
     const [editTodoRequest] = useEditTodoMutation()
 
+    const onAddSuccessNotification = (placement: NotificationPlacement) => {
+        notification.success({
+            message: 'Success!',
+            description: 'Task added to the list.',
+            placement,
+            duration: 3,
+        });
+    };
+
+    const onEditSuccessNotification = (placement: NotificationPlacement) => {
+        notification.success({
+            message: 'Success!',
+            description: 'Task edited.',
+            placement,
+            duration: 3,
+        });
+    };
+
     const onAddNewTask = async (item: any) => {
         try {
             await addTodoRequest(item)
@@ -28,6 +47,7 @@ const AddEditModal: React.FC<ModalProps> = ({ isOpen, itemToEdit, resetItemToEdi
             setName('')
             setDate(null)
             setIsOpen(false)
+            onAddSuccessNotification('top')
             refetchData()
         } catch (error) {
             console.error(error)
@@ -42,6 +62,7 @@ const AddEditModal: React.FC<ModalProps> = ({ isOpen, itemToEdit, resetItemToEdi
             resetItemToEdit()
             setIsOpen(false)
             refetchData()
+            onEditSuccessNotification('top')
         } catch (error) {
             console.error(error)
         }

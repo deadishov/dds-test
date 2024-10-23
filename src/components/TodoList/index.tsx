@@ -3,6 +3,8 @@ import styles from './TodoList.module.scss'
 import TodoItem from '../TodoItem'
 import { useDeleteTodoMutation, useToggleTodoMutation } from '../../redux/services/todoApi'
 import { ItemToEdit, TodoItem as TodoItemType } from '../../@types/types'
+import { NotificationPlacement } from 'antd/es/notification/interface'
+import { notification } from 'antd'
 
 interface TodoProps {
     list: TodoItemType[],
@@ -15,6 +17,15 @@ const TodoList: React.FC<TodoProps> = ({ list, setOpenModal, setItem, refetchDat
     const [deleteTodo] = useDeleteTodoMutation()
     const [toggleTodo] = useToggleTodoMutation()
 
+    const onDeleteSuccessNotification = (placement: NotificationPlacement) => {
+        notification.success({
+            message: 'Success!',
+            description: 'Task deleted from the list.',
+            placement,
+            duration: 3,
+        });
+    };
+
     const editItemOpen = (item: ItemToEdit) => {
         setOpenModal()
         setItem(item)
@@ -24,6 +35,7 @@ const TodoList: React.FC<TodoProps> = ({ list, setOpenModal, setItem, refetchDat
         try {
             await deleteTodo(id)
             refetchData()
+            onDeleteSuccessNotification('top')
         } catch (error) {
             console.error(error)
         }
