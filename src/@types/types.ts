@@ -6,15 +6,7 @@ export interface TodoItem {
     dueDate: string
 }
 
-export interface ItemToEdit {
-    id: string,
-    title: string,
-    dueDate: string,
-    description: string,
-}
+export type ItemToEdit = Omit<TodoItem, 'isCompleted'>
 
-export interface ItemToAdd {
-    title: string,
-    dueDate: string,
-    description: string,
-}
+
+export type ItemToAdd = Omit<TodoItem, 'id' | 'isCompleted'>

@@ -1,13 +1,13 @@
 import React, { useCallback, useEffect, useState } from 'react'
-import { Button, Layout, Spin } from 'antd'
+import { Button, Spin } from 'antd'
+import { Header } from 'antd/es/layout/layout'
 import { FileDoneOutlined } from '@ant-design/icons'
 import styles from './MainScreen.module.scss'
 import { useGetTodoListQuery } from '../../redux/services/todoApi'
 import TodoList from '../TodoList'
 import AddEditModal from '../AddEditModal'
 import { TodoItem } from '../../@types/types'
-
-const { Header } = Layout
+import DeleteModal from '../DeleteModal'
 
 const MainScreen = React.memo(() => {
   const [openModal, setOpenModal] = useState(false)
@@ -54,13 +54,15 @@ const MainScreen = React.memo(() => {
           </>}
       </div>
       <AddEditModal
-        itemToDelete={itemToDelete}
-        closeDeleteModal={() => setItemToDelete(null)}
         refetchData={refetch}
         closeModal={() => setOpenModal(false)}
         isOpen={openModal}
         itemToEdit={editingItem}
         resetItemToEdit={() => setEditingItem(null)} />
+      <DeleteModal
+        itemToDelete={itemToDelete}
+        closeModal={() => setItemToDelete(null)}
+        refetchData={refetch} />
     </>
   )
 })

@@ -22,7 +22,6 @@ const TodoList: React.FC<TodoProps> = React.memo(({ list, setOpenModal, setItem,
     }, [setItem, setOpenModal])
 
     const deleteItemOpen = useCallback((id: string) => {
-        setOpenModal()
         openDeleteModal(id)
     }, [])
 
@@ -45,7 +44,7 @@ const TodoList: React.FC<TodoProps> = React.memo(({ list, setOpenModal, setItem,
                 :
                 <p className={styles.todoNoTasks}>There's no tasks at this moment :)</p>
             }
-            <ul className={styles.todoList}>
+            {list.length ? <ul className={styles.todoList}>
                 {list?.map((item: TodoItemType) => (
                     <TodoItem
                         key={item.id}
@@ -56,6 +55,8 @@ const TodoList: React.FC<TodoProps> = React.memo(({ list, setOpenModal, setItem,
                         item={item} onEdit={editItemOpen} />
                 ))}
             </ul>
+                :
+                null}
         </div>
     )
 })
