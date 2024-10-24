@@ -1,54 +1,40 @@
-import React from 'react'
+import React, { useCallback, useState } from 'react'
 import styles from './TodoList.module.scss'
 import TodoItem from '../TodoItem'
-import { useDeleteTodoMutation, useToggleTodoMutation } from '../../redux/services/todoApi'
-import { ItemToEdit, TodoItem as TodoItemType } from '../../@types/types'
-import { NotificationPlacement } from 'antd/es/notification/interface'
-import { notification } from 'antd'
+import { useToggleTodoMutation } from '../../redux/services/todoApi'
+import { TodoItem as TodoItemType } from '../../@types/types'
 
 interface TodoProps {
     list: TodoItemType[],
     setOpenModal: () => void,
-    setItem: (item: ItemToEdit) => void,
-    refetchData: () => void
+    setItem: (item: TodoItemType) => void,
+    refetchData: () => void,
+    openDeleteModal: (id: string) => void,
 }
 
-const TodoList: React.FC<TodoProps> = ({ list, setOpenModal, setItem, refetchData }) => {
-    const [deleteTodo] = useDeleteTodoMutation()
-    const [toggleTodo] = useToggleTodoMutation()
+const TodoList: React.FC<TodoProps> = React.memo(({ list, setOpenModal, setItem, refetchData, openDeleteModal }) => {
+    const [toggledItem, setToggledItem] = useState<string | null>(null)
+    const [toggleTodo, { isLoading: isToggleLoading }] = useToggleTodoMutation()
 
-    const onDeleteSuccessNotification = (placement: NotificationPlacement) => {
-        notification.success({
-            message: 'Success!',
-            description: 'Task deleted from the list.',
-            placement,
-            duration: 3,
-        });
-    };
-
-    const editItemOpen = (item: ItemToEdit) => {
+    const editItemOpen = useCallback((item: TodoItemType) => {
         setOpenModal()
         setItem(item)
-    }
+    }, [setItem, setOpenModal])
 
-    const onDeleteItem = async (id: string) => {
-        try {
-            await deleteTodo(id)
-            refetchData()
-            onDeleteSuccessNotification('top')
-        } catch (error) {
-            console.error(error)
-        }
-    }
+    const deleteItemOpen = useCallback((id: string) => {
+        setOpenModal()
+        openDeleteModal(id)
+    }, [])
 
-    const onToggle = async (id: string) => {
+    const onToggle = useCallback(async (id: string) => {
+        setToggledItem(id)
         try {
             await toggleTodo(id)
             refetchData()
         } catch (error) {
             console.error(error)
         }
-    }
+    }, [])
 
     return (
         <div className={styles.todoBlock}>
@@ -57,15 +43,21 @@ const TodoList: React.FC<TodoProps> = ({ list, setOpenModal, setItem, refetchDat
                 <p className={styles.todoListHeaderDate}>Due date:</p>
             </div>
                 :
-                <p style={{ fontSize: 20, fontWeight: 600, marginTop: 200 }}>There's no tasks at this moment :)</p>
+                <p className={styles.todoNoTasks}>There's no tasks at this moment :)</p>
             }
             <ul className={styles.todoList}>
                 {list?.map((item: TodoItemType) => (
-                    <TodoItem onToggle={(id: string) => onToggle(id)} onDelete={(id: string) => onDeleteItem(id)} item={item} onEdit={editItemOpen} />
+                    <TodoItem
+                        key={item.id}
+                        toggledItem={toggledItem}
+                        isToggleLoading={isToggleLoading}
+                        onToggle={(id: string) => onToggle(id)}
+                        onDeleteOpen={(id: string) => deleteItemOpen(id)}
+                        item={item} onEdit={editItemOpen} />
                 ))}
             </ul>
         </div>
     )
-}
+})
 
 export default TodoList

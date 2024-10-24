@@ -20,5 +20,14 @@
     &Tools {
         display: flex;
         gap: 20px;
+
+        &Checkbox {
+            display: flex;
+            gap: 5px;
+        }
+
+        &Icon {
+            cursor: pointer;
+        }
     }
 }

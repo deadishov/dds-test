@@ -11,5 +11,10 @@ export interface ItemToEdit {
     title: string,
     dueDate: string,
     description: string,
-    isCompleted: boolean
+}
+
+export interface ItemToAdd {
+    title: string,
+    dueDate: string,
+    description: string,
 }
